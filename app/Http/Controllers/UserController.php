@@ -15,44 +15,41 @@ class UserController extends Controller
     // Crear un nuevo usuario
     public function store(Request $request)
     {
-        $request->validate([
+        $attributes = $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required'
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-        ]);
+        $user = User::create($attributes);
 
         return response()->json($user, 201);
     }
 
     // Mostrar un usuario por ID
-    public function show($id)
+    public function show(User $user)
     {
-        return User::findOrFail($id);
+        return $user;
     }
 
     // Actualizar un usuario
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        $user = User::findOrFail($id);
+        $attributes = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users',
+            'password' => 'required'
+        ]);
 
-        $user->update($request->all());
+        $user->update($attributes);
 
         return response()->json($user, 200);
     }
 
     // Eliminar un usuario
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        $user = User::findOrFail($id);
-
         $user->delete();
-
         return response()->json(null, 204);
     }
 }

@@ -35,16 +35,16 @@ class VentaController extends Controller
         return response()->json($venta, 201);
     }
 
-    public function show($id) {
-        return Venta::with('detalles')->findOrFail($id);
+    public function show(Venta $venta) {
+        return $venta->load('detalles');
     }
 
-    public function update(Request $request, $id) {
+    public function update(Request $request, Venta $venta) {
         // Similar al método de store, puedes implementar la lógica de actualización
     }
 
-    public function destroy($id) {
-        Venta::destroy($id);
+    public function destroy(Venta $venta) {
+        $venta->delete();
         return response()->json(null, 204);
     }
 }

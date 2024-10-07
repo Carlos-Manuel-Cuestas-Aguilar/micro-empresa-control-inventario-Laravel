@@ -11,22 +11,22 @@ class ProveedorController extends Controller
     }
 
     public function store(Request $request) {
-        $request->validate(['nombre' => 'required']);
-        return Proveedor::create($request->all());
+        $attributes = $request->validate(['nombre' => 'required']);
+        return Proveedor::create($attributes);
     }
 
-    public function show($id) {
-        return Proveedor::findOrFail($id);
-    }
-
-    public function update(Request $request, $id) {
-        $proveedor = Proveedor::findOrFail($id);
-        $proveedor->update($request->all());
+    public function show(Proveedor $proveedor) {
         return $proveedor;
     }
 
-    public function destroy($id) {
-        Proveedor::destroy($id);
+    public function update(Request $request, Proveedor $proveedor) {
+        $attributes = $request->validate(['nombre' => 'required']);
+        $proveedor->update($attributes);
+        return $proveedor;
+    }
+
+    public function destroy(Proveedor $proveedor) {
+        $proveedor->delete();
         return response()->json(null, 204);
     }
 }

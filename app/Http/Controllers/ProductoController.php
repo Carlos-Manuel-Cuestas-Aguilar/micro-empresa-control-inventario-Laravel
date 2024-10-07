@@ -11,27 +11,32 @@ class ProductoController extends Controller
     }
 
     public function store(Request $request) {
-        $request->validate([
+        $attributes = $request->validate([
             'nombre' => 'required',
             'precio' => 'required|numeric',
             'stock' => 'required|integer',
-            'proveedor_id' => 'required|exists:proveedores,id'
+            'proveedor_id' => 'required|exists:proveedors,id'
         ]);
-        return Producto::create($request->all());
+        return Producto::create($attributes)->load('proveedor');
     }
 
-    public function show($id) {
-        return Producto::with('proveedor')->findOrFail($id);
+    public function show(Producto $producto) {
+        return $producto->load('proveedor');
     }
 
-    public function update(Request $request, $id) {
-        $producto = Producto::findOrFail($id);
-        $producto->update($request->all());
-        return $producto;
+    public function update(Request $request, Producto $producto) {
+        $attributes = $request->validate([
+            'nombre' => 'required',
+            'precio' => 'required|numeric',
+            'stock' => 'required|integer',
+            'proveedor_id' => 'required|exists:proveedors,id'
+        ]);
+        $producto->update($attributes);
+        return $producto->load('proveedor');
     }
 
-    public function destroy($id) {
-        Producto::destroy($id);
+    public function destroy(Producto $producto) {
+        $producto->delete();
         return response()->json(null, 204);
     }
 }
